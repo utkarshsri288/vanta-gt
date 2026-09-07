@@ -465,6 +465,144 @@
         border-color: var(--blue);
       }
 
+      /* Hero Section Supercharger */
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 7px 18px;
+        border-radius: 99px;
+        background: rgba(46, 139, 255, 0.08);
+        border: 1px solid rgba(46, 139, 255, 0.35);
+        box-shadow: 0 0 24px rgba(46, 139, 255, 0.2);
+        font-family: 'Chakra Petch', sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink);
+        margin-bottom: 22px;
+      }
+      .hero-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #00f0ff;
+        box-shadow: 0 0 10px #00f0ff;
+        animation: pulse-dot 1.8s infinite;
+      }
+      @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.6); opacity: 0.4; }
+      }
+      .hero-badge-live {
+        font-size: 9px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: rgba(0, 240, 255, 0.16);
+        color: #00f0ff;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+      }
+
+      .hero-spec-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 32px;
+        max-width: 660px;
+      }
+      @media (max-width: 640px) {
+        .hero-spec-strip { grid-template-columns: 1fr 1fr; }
+      }
+      .hero-spec-pill {
+        background: rgba(16, 18, 26, 0.55);
+        border: 1px solid rgba(242, 244, 248, 0.12);
+        border-radius: 8px;
+        padding: 12px 14px;
+        backdrop-filter: blur(12px);
+        transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      }
+      .hero-spec-pill:hover {
+        border-color: var(--blue);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px -6px rgba(46, 139, 255, 0.4);
+      }
+      .hero-spec-val {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 21px;
+        color: #fff;
+        line-height: 1;
+      }
+      .hero-spec-val span {
+        font-size: 11px;
+        color: var(--blue);
+        font-family: 'Chakra Petch';
+        margin-left: 3px;
+        letter-spacing: 0.08em;
+      }
+      .hero-spec-lbl {
+        font-family: 'Chakra Petch';
+        font-size: 9px;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-top: 5px;
+      }
+
+      .hero-cta-group {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 32px;
+      }
+      .hero-cta-group .btn { margin-top: 0; }
+
+      .hero-scroll-indicator {
+        margin-top: 42px;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        opacity: 0.75;
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      .hero-scroll-indicator:hover {
+        opacity: 1;
+        transform: translateY(2px);
+      }
+      .scroll-mouse {
+        width: 22px;
+        height: 36px;
+        border-radius: 12px;
+        border: 2px solid rgba(242, 244, 248, 0.35);
+        position: relative;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0 0 12px rgba(46, 139, 255, 0.2);
+      }
+      .scroll-wheel {
+        width: 3px;
+        height: 7px;
+        background: var(--blue);
+        border-radius: 2px;
+        position: absolute;
+        top: 6px;
+        animation: mouse-scroll 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+      @keyframes mouse-scroll {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(14px); opacity: 0; }
+      }
+      .scroll-prompt-text {
+        font-family: 'Chakra Petch';
+        font-size: 11px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
       /* 3D Interactive Spec Cards */
       .specs {
         margin-top: 30px;
@@ -708,18 +846,60 @@
               </div>`).join('')}</div>`
           : '';
 
-        sec.innerHTML = `
-          <div class="wrap">
-            <div class="col">
-              <span class="kick" data-cipher="${s.kick}">${s.kick}</span>
-              <h1 class="${hc}" data-h>${splitWords(s.h)}</h1>
-              ${s.body ? `<p class="body" data-r>${s.body}</p>` : ''}
-              ${specsHTML}
-              ${s.cta ? `<a href="#s2" class="btn magnetic" data-r>${s.cta} &#8595;</a>` : ''}
-              ${s.cta2 ? '<div data-r><a href="#" class="btn magnetic">Configure yours &#8599;</a> <a href="mailto:sales@vanta-motors.com" class="btn ghost magnetic">Private unveiling</a></div>' : ''}
-              ${s.hero ? '<div class="body" data-r style="margin-top:30px;font-family:Chakra Petch;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)">Scroll to launch &#8595;</div>' : ''}
-            </div>
-          </div>`;
+        if (s.hero) {
+          sec.innerHTML = `
+            <div class="wrap">
+              <div class="col hero-col">
+                <div class="hero-badge" data-r>
+                  <span class="hero-dot"></span>
+                  <span class="hero-badge-text">SERIES 01 // CHASSIS #001 OF 050 // GLOBAL REVEAL</span>
+                  <span class="hero-badge-live">LIVE</span>
+                </div>
+                <h1 class="hero-h" data-h>${splitWords(s.h)}</h1>
+                <p class="body" data-r>${s.body}</p>
+                <div class="hero-spec-strip" data-r>
+                  <div class="hero-spec-pill">
+                    <div class="hero-spec-val"><span data-count="617">0</span><span>HP</span></div>
+                    <div class="hero-spec-lbl">Twin-Turbo V8</div>
+                  </div>
+                  <div class="hero-spec-pill">
+                    <div class="hero-spec-val"><span data-count="2.9">0</span><span>s</span></div>
+                    <div class="hero-spec-lbl">0–100 km/h</div>
+                  </div>
+                  <div class="hero-spec-pill">
+                    <div class="hero-spec-val"><span data-count="305">0</span><span>km/h</span></div>
+                    <div class="hero-spec-lbl">Top Track Speed</div>
+                  </div>
+                  <div class="hero-spec-pill">
+                    <div class="hero-spec-val"><span data-count="0.28">0</span><span>Cd</span></div>
+                    <div class="hero-spec-lbl">Aero Coefficient</div>
+                  </div>
+                </div>
+                <div class="hero-cta-group" data-r>
+                  <a href="#s2" class="btn magnetic">${s.cta} &#8595;</a>
+                  <a href="#s8" class="btn ghost magnetic">Configure Series &#8599;</a>
+                </div>
+                <div data-r>
+                  <a href="#s2" class="hero-scroll-indicator">
+                    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+                    <span class="scroll-prompt-text">Scroll to engage powertrain &#8595;</span>
+                  </a>
+                </div>
+              </div>
+            </div>`;
+        } else {
+          sec.innerHTML = `
+            <div class="wrap">
+              <div class="col">
+                <span class="kick" data-cipher="${s.kick}">${s.kick}</span>
+                <h1 class="${hc}" data-h>${splitWords(s.h)}</h1>
+                ${s.body ? `<p class="body" data-r>${s.body}</p>` : ''}
+                ${specsHTML}
+                ${s.cta ? `<a href="#s2" class="btn magnetic" data-r>${s.cta} &#8595;</a>` : ''}
+                ${s.cta2 ? '<div data-r><a href="#" class="btn magnetic">Configure yours &#8599;</a> <a href="mailto:sales@vanta-motors.com" class="btn ghost magnetic">Private unveiling</a></div>' : ''}
+              </div>
+            </div>`;
+        }
         main.appendChild(sec);
       });
     </script>
@@ -875,7 +1055,7 @@
       cursorLoop();
 
       // Magnetic hover effects
-      document.querySelectorAll('a, button, .btn, .spec').forEach((el) => {
+      document.querySelectorAll('a, button, .btn, .spec, .hero-spec-pill').forEach((el) => {
         el.addEventListener('mouseenter', () => {
           document.body.classList.add('hovering');
           playBlip(720, 0.05);
@@ -886,7 +1066,7 @@
       });
 
       // 3D Tilt on Spec Cards
-      document.querySelectorAll('.spec').forEach((card) => {
+      document.querySelectorAll('.spec, .hero-spec-pill').forEach((card) => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
           const x = e.clientX - rect.left;
@@ -1043,6 +1223,7 @@
             onEnter: () => {
               const raw = el.dataset.count;
               const dec = raw.indexOf('.') > -1;
+              const decPlaces = dec ? (raw.split('.')[1] || '').length : 0;
               const target = parseFloat(raw.replace(/,/g, ''));
               const o = { v: 0 };
               g.to(o, {
@@ -1050,7 +1231,7 @@
                 duration: 1.8,
                 ease: 'power2.out',
                 onUpdate: () => {
-                  el.textContent = dec ? o.v.toFixed(1) : Math.round(o.v).toLocaleString();
+                  el.textContent = dec ? o.v.toFixed(decPlaces) : Math.round(o.v).toLocaleString();
                 }
               });
             }
