@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#06070a" />
+    <meta name="description" content="VANTA GT — a cinematic, scroll-driven luxury automotive experience. Rotation, doors, interior, engine, specs and acceleration, controlled by your scroll." />
+    <meta property="og:title" content="VANTA GT — The Art of Motion" />
+    <meta property="og:description" content="An immersive luxury car launch — every angle, controlled by scroll." />
+    <title>VANTA GT — The Art of Motion</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root { --bg:#06070a; --ink:#f2f4f8; --muted:#8a909c; --blue:#2e8bff; --violet:#7b61ff; --red:#ff3b5c; --line:rgba(242,244,248,0.12); }
+      * { box-sizing:border-box; } html,body { margin:0; padding:0; }
+      body { background:#06070a; color:var(--ink); font-family:'Inter',sans-serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+      ::selection { background:var(--blue); color:#06070a; }
+      ::-webkit-scrollbar { width:7px; } ::-webkit-scrollbar-track { background:#06070a; } ::-webkit-scrollbar-thumb { background:#23262e; border-radius:99px; }
+
+      #stage { position:fixed; inset:0; z-index:0; overflow:hidden; background:#06070a; }
+      .car-vid { position:absolute; left:50%; top:50%; width:100%; height:100%; object-fit:cover; transform:translate(-50%,-50%); opacity:0; transition:opacity .8s ease; will-change:opacity; filter:contrast(1.06) saturate(1.06); }
+      .car-vid.ready { opacity:1; }
+      .fx { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; mix-blend-mode:screen; }
+      .scrim { position:fixed; inset:0; z-index:2; pointer-events:none;
+        background: linear-gradient(180deg, rgba(6,7,10,0.7) 0%, rgba(6,7,10,0.05) 18%, rgba(6,7,10,0) 50%, rgba(6,7,10,0.55) 80%, rgba(6,7,10,0.9) 100%),
+                    linear-gradient(90deg, rgba(6,7,10,0.6) 0%, rgba(6,7,10,0.04) 30%, transparent 50%, rgba(6,7,10,0.04) 70%, rgba(6,7,10,0.6) 100%); }
+      .mstripe { position:fixed; top:0; left:0; height:3px; width:100%; z-index:50; transform-origin:left; transform:scaleX(0); background:linear-gradient(90deg,var(--blue),var(--violet) 55%,var(--red)); box-shadow:0 0 12px rgba(123,97,255,0.6); }
+
+      .mono { font-family:'Chakra Petch',sans-serif; }
+      nav { position:fixed; top:0; left:0; right:0; z-index:40; display:flex; align-items:center; justify-content:space-between; padding:20px clamp(20px,4vw,54px); transition:background .5s, backdrop-filter .5s, border-color .5s; border-bottom:1px solid transparent; }
+      nav.solid { background:rgba(6,7,10,0.55); backdrop-filter:blur(16px); border-bottom:1px solid var(--line); }
+      .logo { font-family:'Chakra Petch'; font-weight:700; letter-spacing:0.26em; font-size:18px; text-decoration:none; color:var(--ink); display:flex; align-items:center; gap:11px; }
+      .logo .b { width:18px; height:11px; border-radius:2px; background:linear-gradient(90deg,var(--blue),var(--violet),var(--red)); }
+      .navlinks { display:flex; gap:28px; } .navlinks a { font-size:13px; letter-spacing:0.04em; color:var(--muted); text-decoration:none; transition:color .3s; } .navlinks a:hover { color:var(--ink); }
+      .nav-cta { font-family:'Chakra Petch'; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:#06070a; background:linear-gradient(110deg,var(--blue),var(--violet)); text-decoration:none; padding:11px 18px; border-radius:4px; }
+      @media (max-width:900px){ .navlinks{ display:none; } }
+
+      .hud { position:fixed; right:clamp(16px,4vw,48px); bottom:26px; z-index:40; text-align:right; pointer-events:none; }
+      .hud .l { font-family:'Chakra Petch'; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); }
+      .hud .n { font-family:'Space Grotesk'; font-weight:700; font-size:24px; background:linear-gradient(100deg,#fff,var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+      main { position:relative; z-index:10; }
+      .wrap { width:100%; max-width:1320px; margin-inline:auto; padding-inline:clamp(22px,5vw,88px); }
+      .panel { min-height:100vh; display:flex; align-items:center; }
+      .panel.center { justify-content:center; text-align:center; } .panel.right { justify-content:flex-end; text-align:right; }
+      .col { max-width:600px; }
+      .kick { font-family:'Chakra Petch'; font-size:12px; letter-spacing:0.34em; text-transform:uppercase; color:var(--blue); display:inline-flex; align-items:center; gap:12px; }
+      .kick::before { content:''; width:26px; height:2px; background:linear-gradient(90deg,var(--blue),var(--violet)); }
+      .center .kick { justify-content:center; } .right .kick { flex-direction:row-reverse; }
+      h1,h2 { font-family:'Space Grotesk',sans-serif; font-weight:700; line-height:0.96; margin:16px 0 0; letter-spacing:-0.02em; text-transform:uppercase; text-shadow:0 8px 50px rgba(6,7,10,0.8); }
+      .hero-h { font-size:clamp(46px,8.5vw,128px); } .sec-h { font-size:clamp(36px,6vw,96px); }
+      .grad { background:linear-gradient(100deg,#fff 0%,var(--blue) 50%,var(--violet) 90%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .word { display:inline-block; opacity:0; transform:translateY(28px); }
+      .body { margin-top:20px; font-size:clamp(15px,1.35vw,18px); line-height:1.65; color:rgba(242,244,248,0.82); max-width:46ch; text-shadow:0 2px 22px rgba(6,7,10,0.95); }
+      .center .body { margin-inline:auto; } .right .body { margin-left:auto; }
+      .btn { display:inline-flex; align-items:center; gap:10px; margin-top:30px; padding:15px 32px; border-radius:4px; font-family:'Chakra Petch'; font-weight:600; font-size:13px; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none; color:#06070a; background:linear-gradient(110deg,var(--blue),var(--violet)); transition:.3s; box-shadow:0 14px 44px -12px rgba(46,139,255,0.6); }
+      .btn:hover { transform:translateY(-2px); box-shadow:0 20px 56px -12px rgba(123,97,255,0.85); }
+      .btn.ghost { color:var(--ink); background:rgba(242,244,248,0.05); border:1px solid var(--line); box-shadow:none; }
+
+      /* specs */
+      .specs { margin-top:30px; display:grid; grid-template-columns:repeat(4,1fr); gap:18px; max-width:760px; }
+      .right .specs { margin-left:auto; } .center .specs { margin-inline:auto; }
+      @media (max-width:760px){ .specs{ grid-template-columns:1fr 1fr; } }
+      .spec { border:1px solid var(--line); border-radius:10px; padding:20px 18px; background:rgba(16,18,26,0.34); backdrop-filter:blur(10px); text-align:left; }
+      .spec .n { font-family:'Space Grotesk'; font-weight:700; font-size:clamp(28px,3.4vw,42px); line-height:1; background:linear-gradient(100deg,#fff,var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .spec .u { font-size:13px; color:var(--blue); font-family:'Chakra Petch'; letter-spacing:0.1em; } .spec .l { margin-top:10px; font-size:12px; color:var(--muted); letter-spacing:0.04em; text-transform:uppercase; }
+
+      footer { position:relative; z-index:10; border-top:1px solid var(--line); padding:38px clamp(20px,5vw,80px); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; font-family:'Chakra Petch'; font-size:12px; letter-spacing:0.14em; color:var(--muted); }
+      footer .soc { display:flex; gap:22px; } footer a { text-decoration:none; transition:.3s; } footer a:hover { color:var(--blue); }
+
+      #pre { position:fixed; inset:0; z-index:200; background:#06070a; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; transition:opacity .9s, visibility .9s; }
+      #pre.done { opacity:0; visibility:hidden; }
+      #pre .b { font-family:'Chakra Petch'; letter-spacing:0.32em; font-size:18px; } #pre .b span { background:linear-gradient(90deg,var(--blue),var(--violet),var(--red)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      #pre .track { width:min(300px,62vw); height:2px; background:rgba(242,244,248,0.14); border-radius:99px; overflow:hidden; }
+      #pre .fill { height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--violet),var(--red)); transition:width .3s; }
+      #pre .pct { font-family:'Chakra Petch'; font-size:11px; letter-spacing:0.3em; color:var(--muted); }
+    </style>
+  </head>
+
+  <body>
+    <div id="pre">
+      <div class="b">VANTA <span>GT</span></div>
+      <div class="track"><div class="fill" id="pre-fill"></div></div>
+      <div class="pct" id="pre-pct">PREPARING THE LAUNCH · 0%</div>
+    </div>
+
+    <div id="stage">
+      <video class="car-vid" id="car" muted playsinline preload="auto" crossorigin="anonymous" aria-label="Luxury car"></video>
+      <canvas class="fx" id="fx"></canvas>
+    </div>
+    <div class="scrim"></div>
+    <div class="mstripe" id="mstripe"></div>
+
+    <nav id="nav">
+      <a href="#top" class="logo"><span class="b"></span>VANTA GT</a>
+      <div class="navlinks"><a href="#s4">Interior</a><a href="#s5">Engine</a><a href="#s6">Specs</a><a href="#s8">Configure</a></div>
+      <a href="#s8" class="nav-cta">Configure</a>
+    </nav>
+
+    <div class="hud"><div class="l" id="hud-l">STANDBY</div><div class="n" id="hud-n">VANTA</div></div>
+
+    <main id="top"></main>
+    <footer class="mono"><span>VANTA-MOTORS.COM &nbsp;·&nbsp; © 2026 VANTA GT</span><span class="soc"><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">X</a></span></footer>
+
+    <script>
+      const SCENES = [
+        { kick:'VANTA GT — Series 01', h:['The art of','@motion.'], hero:true, body:'A machine sculpted by wind and intent. Scroll to begin a launch experience unlike any other.', cta:'Begin the reveal', l:'STANDBY' },
+        { kick:'01 — Design', h:['Every angle,','@considered.'], body:'Not a single line is accidental. The form rotates to reveal a silhouette honed in the wind tunnel.', l:'EXTERIOR' },
+        { kick:'02 — Access', h:['Step','@inside.'], body:'Frameless doors rise to welcome you into a cabin built around a single idea — the driver.', l:'DOORS' },
+        { kick:'03 — Interior', h:['Crafted around','the @driver.'], body:'Hand-stitched leather, machined alloy, and a cockpit that disappears around you at speed.', l:'CABIN' },
+        { kick:'04 — Engineering', h:['Engineered','to the @core.'], body:'The powertrain unfolds into its components — every element obsessed over, balanced, and tuned.', l:'POWERTRAIN' },
+        { kick:'05 — Specifications', h:['The','@numbers.'], specs:[['617','HP','Max power'],['2.9','s','0–100 km/h'],['305','km/h','Top speed'],['1,580','kg','Kerb weight']], l:'SPECS' },
+        { kick:'06 — Performance', h:['@Unleashed.'], body:'Throttle open. The world compresses. Five-hundred-plus horses translate intent into pure velocity.', l:'LAUNCH' },
+        { kick:'07 — The VANTA GT', h:['Your move,','@maestro.'], body:'A limited series for a singular few. Configure yours, or arrange a private unveiling.', cta2:true, l:'RESERVE' },
+      ];
+      const main = document.getElementById('top');
+      const splitWords = (lines) => lines.map((l) => {
+        const parts = l.split(' ').map((w) => { const g = w.charAt(0)==='@'; const t = g?w.slice(1):w; return `<span class="word${g?' grad':''}">${t}</span>`; }).join(' ');
+        return `<span class="line" style="display:block">${parts}</span>`;
+      }).join('');
+      SCENES.forEach((s,i) => {
+        const sec=document.createElement('section');
+        sec.className='panel'+(s.align==='right'?' right':'')+(s.align==='center'?' center':'');
+        sec.id='s'+(i+1);
+        const hc=s.hero?'hero-h':'sec-h';
+        const specsHTML = s.specs ? `<div class="specs" data-r>${s.specs.map((sp)=>`<div class="spec"><div class="n"><span data-count="${sp[0]}">0</span><span class="u">${sp[1]}</span></div><div class="l">${sp[2]}</div></div>`).join('')}</div>` : '';
+        sec.innerHTML=`<div class="wrap"><div class="col">
+          <span class="kick">${s.kick}</span>
+          <h1 class="${hc}" data-h>${splitWords(s.h)}</h1>
+          ${s.body?`<p class="body" data-r>${s.body}</p>`:''}
+          ${specsHTML}
+          ${s.cta?`<a href="#s2" class="btn" data-r>${s.cta} &#8595;</a>`:''}
+          ${s.cta2?'<div data-r><a href="#" class="btn">Configure yours &#8599;</a> <a href="mailto:sales@vanta-motors.com" class="btn ghost">Private unveiling</a></div>':''}
+          ${s.hero?'<div class="body" data-r style="margin-top:30px;font-family:Chakra Petch;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)">Scroll to launch &#8595;</div>':''}
+        </div></div>`;
+        main.appendChild(sec);
+      });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+    <script>
+      const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)); const range=(p,a,b)=>clamp((p-a)/(b-a));
+      const VID=document.getElementById('car'), pre=document.getElementById('pre'), preFill=document.getElementById('pre-fill'), prePct=document.getElementById('pre-pct');
+      const SRC='car.mp4'; let started=false;
+      function setPct(p){ p=Math.max(0,Math.min(100,Math.round(p))); preFill.style.width=p+'%'; prePct.textContent=(p<100?'PREPARING THE LAUNCH · ':'READY · ')+p+'%'; }
+      function go(){ if(started)return; started=true; setPct(100); VID.classList.add('ready'); setTimeout(init,260); }
+      function startStream(){ if(VID.src)return; VID.src=SRC; VID.load(); VID.addEventListener('canplaythrough',go,{once:true}); setTimeout(go,9000); }
+      // download whole clip first (blob) → crisp + instant scrub, no buffering
+      if(window.fetch && window.ReadableStream){
+        fetch(SRC).then((res)=>{ if(!res.ok||!res.body) throw 0; const total=+res.headers.get('Content-Length')||0; const reader=res.body.getReader(); const chunks=[]; let recv=0;
+          (function pump(){ reader.read().then(({done,value})=>{ if(done){ VID.src=URL.createObjectURL(new Blob(chunks,{type:'video/mp4'})); VID.load(); VID.addEventListener('loadeddata',go,{once:true}); setTimeout(go,2500); return; } chunks.push(value); recv+=value.length; if(total) setPct((recv/total)*96); pump(); }).catch(startStream); })();
+        }).catch(startStream);
+      } else { startStream(); }
+
+      // atmosphere particles (subtle speed dust / sparks)
+      const fx=document.getElementById('fx'), fxc=fx.getContext('2d');
+      let carP=0, motes=[];
+      function spr(){ const s=document.createElement('canvas'); s.width=s.height=64; const c=s.getContext('2d'); const g=c.createRadialGradient(32,32,0,32,32,32); g.addColorStop(0,'rgba(180,205,255,1)'); g.addColorStop(1,'rgba(180,205,255,0)'); c.fillStyle=g; c.fillRect(0,0,64,64); return s; }
+      const sprite=spr();
+      function mk(seed){ return { x:Math.random()*fx.width, y:Math.random()*fx.height, r:Math.random()*1.8+0.5, vx:-(0.3+Math.random()*1.4), a:0.04+Math.random()*0.08, s:Math.random()*6.28 }; }
+      function sizeFx(){ fx.width=innerWidth; fx.height=innerHeight; motes=Array.from({length:70},()=>mk(true)); }
+      sizeFx();
+
+      let prog=0; const ease={p:0}; let lastSeek=-1;
+      const navEl=document.getElementById('nav'), bar=document.getElementById('mstripe'), hudL=document.getElementById('hud-l'), hudN=document.getElementById('hud-n');
+      function init(){
+        pre.classList.add('done');
+        const g=window.gsap; g.registerPlugin(window.ScrollTrigger);
+        try{ const L=window.Lenis; if(typeof L==='function'){ const lenis=new L({duration:1.25,smoothWheel:true}); lenis.on('scroll',window.ScrollTrigger.update); g.ticker.add((t)=>lenis.raf(t*1000)); g.ticker.lagSmoothing(0); } }catch(e){}
+        window.ScrollTrigger.create({trigger:document.body,start:'top top',end:'bottom bottom',onUpdate:(s)=>(prog=s.progress)});
+        document.querySelectorAll('section.panel').forEach((sec)=>{
+          const words=sec.querySelectorAll('[data-h] .word'), rest=sec.querySelectorAll('[data-r]'), col=sec.querySelector('.col');
+          g.set([...words,...rest],{opacity:0,y:28});
+          window.ScrollTrigger.create({trigger:sec,start:'top 74%',once:true,onEnter:()=>{
+            g.to(words,{opacity:1,y:0,duration:0.9,stagger:0.05,ease:'power3.out'});
+            g.to(rest,{opacity:1,y:0,duration:0.9,stagger:0.09,delay:0.18,ease:'power3.out'});
+          }});
+          window.ScrollTrigger.create({trigger:sec,start:'top bottom',end:'bottom top',scrub:true,onUpdate:(s)=>{ const d=Math.abs(s.progress-0.5)*2; col.style.opacity=clamp(1.28-d*2.55).toFixed(3); }});
+        });
+        // spec counters
+        document.querySelectorAll('[data-count]').forEach((el)=>{
+          window.ScrollTrigger.create({trigger:el,start:'top 88%',once:true,onEnter:()=>{ const raw=el.dataset.count; const dec=raw.indexOf('.')>-1; const target=parseFloat(raw.replace(/,/g,'')); const o={v:0};
+            g.to(o,{v:target,duration:1.8,ease:'power2.out',onUpdate:()=>{ el.textContent = dec ? o.v.toFixed(1) : Math.round(o.v).toLocaleString(); }}); }});
+        });
+        renderer();
+        (function fxLoop(t){
+          fxc.clearRect(0,0,fx.width,fx.height);
+          const dens=0.5+range(carP,0.55,0.85)*1.4; // more streaks during acceleration
+          for(const m of motes){ m.x+=m.vx*dens; m.y+=Math.sin(t*0.001+m.s)*0.2; if(m.x< -8){ m.x=fx.width+8; m.y=Math.random()*fx.height; }
+            const r=m.r*4; fxc.globalAlpha=m.a*clamp(dens*0.7); fxc.drawImage(sprite,m.x-r,m.y-r,r*2,r*2*(dens>1.2?(0.6+m.vx*-0.5):1)); }
+          fxc.globalAlpha=1; requestAnimationFrame(fxLoop);
+        })(0);
+        addEventListener('resize',()=>{ sizeFx(); window.ScrollTrigger.refresh(); });
+      }
+      function renderer(){
+        ease.p+=(prog-ease.p)*0.1; const p=ease.p; carP=p;
+        if(VID.duration && !VID.seeking){ const target=clamp(p)*VID.duration*0.999; if(Math.abs(lastSeek-target)>0.042){ lastSeek=target; try{ VID.currentTime=target; }catch(e){} } }
+        bar.style.transform=`scaleX(${p})`;
+        navEl.classList.toggle('solid', scrollY>40);
+        const si=Math.min(SCENES.length-1,Math.round(p*(SCENES.length-1)));
+        hudL.textContent=SCENES[si].l; hudN.textContent=(si>=6?Math.round(range(p,0.62,0.78)*305)+' KM/H':'VANTA');
+        requestAnimationFrame(renderer);
+      }
+    </script>
+  </body>
+</html>

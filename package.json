@@ -1,0 +1,20 @@
+{
+  "name": "vanta-gt-experience",
+  "version": "1.0.0",
+  "description": "Scroll-driven interactive luxury car experience",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "automotive",
+    "scroll-animation",
+    "gsap",
+    "scrolltrigger",
+    "canvas",
+    "interactive"
+  ],
+  "author": "",
+  "license": "ISC"
+}
